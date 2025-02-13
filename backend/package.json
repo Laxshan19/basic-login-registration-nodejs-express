@@ -1,0 +1,26 @@
+{
+  "name": "nodejs-express-auth",
+  "version": "1.0.0",
+  "description": "apply node.js and express to authentication ",
+  "main": "index.js",
+  "scripts": {
+    "start":"nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "nodejs-express-auth"
+  },
+  "author": "Lax",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^0.1.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "hbs": "^4.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql": "^2.18.1",
+    "nodemon": "^3.1.9"
+  }
+}
