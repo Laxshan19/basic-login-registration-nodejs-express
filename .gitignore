@@ -14,20 +14,20 @@ pids
 *.pid.lock
 
 # Dependency directories
-backend/node_modules/
+project/node_modules/
 frontend/node_modules/
 jspm_packages/
 
-# Environment files (backend)
-backend/.env
-backend/.env.development.local
-backend/.env.test.local
-backend/.env.production.local
-backend/.env.local
+# Environment files (project)
+project/.env
+project/.env.development.local
+project/.env.test.local
+project/.env.production.local
+project/.env.local
 
 # Coverage and build output
 coverage
-backend/dist/
+project/dist/
 frontend/dist/
 .next
 .nuxt
