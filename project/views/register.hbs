@@ -4,7 +4,10 @@
   <body>
     <div class="container">
       <div class="text">Registration</div>
-      <form action="#">
+      {{#if msg}}
+      <p class="{{msg_type}}">{{msg}}</p>
+      {{/if}}
+      <form action="/auth/register" method="post">
         <div class="data">
           <label for="name">Full Name</label>
           <input type="text" name="name" id="name" />

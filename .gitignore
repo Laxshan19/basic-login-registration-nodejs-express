@@ -15,7 +15,6 @@ pids
 
 # Dependency directories
 project/node_modules/
-frontend/node_modules/
 jspm_packages/
 
 # Environment files (project)
@@ -24,6 +23,9 @@ project/.env.development.local
 project/.env.test.local
 project/.env.production.local
 project/.env.local
+
+# Keep example environment file
+!project/.env.example
 
 # Coverage and build output
 coverage

@@ -5,12 +5,17 @@ require('dotenv').config();  // Load environment variables(.env)
 const path=require('path');
 const hbs=require("hbs");
 
-//router
-const routes=require("./server/routes/users");
-app.use('/',routes);
+
+//Middleware to parse form and JSON data
+//express.urlencoded() and express.json() are before your route definitions
+app.use(express.urlencoded({extended:false}));
+// Router (After middleware)
+app.use('/',require("./server/routes/pages"));
+app.use('/auth',require("./server/routes/auth"));
+
 
 //Mysql connection
-const con=mysql.createPool({
+const con=mysql.createConnection({
     connectionLimit:10,
     host:process.env.DB_HOST,
     user:process.env.DB_USER,
@@ -19,15 +24,17 @@ const con=mysql.createPool({
     port: process.env.DB_PORT
 });
 
-con.getConnection((err,connection)=>{
+con.connect((err)=>{
     if (err) {
         console.error("❌ Database connection failed: ", err);
     } else {
         console.log("✅ Database connected successfully!");
-        connection.release(); // Release the connection back to the pool
     }
 })
 
+
+
+// Set up static files and view engine
 //console.log(__dirname);
 const location=path.join(__dirname,"./public");
 app.use(express.static(location));
@@ -36,7 +43,7 @@ app.set('view engine','hbs');  //tell to express , i gonna use hbs handle bar
 const partialPath = path.join(__dirname, "./views/partials"); 
 hbs.registerPartials(partialPath);
 
-
+// Start the server
 const port = process.env.port||5000;  //server port
 app.listen(8000,()=>{
     console.log("server is running at http://localhost:8000/");
