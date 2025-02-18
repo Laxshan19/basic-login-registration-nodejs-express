@@ -39,5 +39,54 @@ exports.register=(req, res) => {
     });
 }
 
+exports.login = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+  
+      // Check if email or password is empty
+      if (!email || !password) {
+        return res.status(400).render("login", {
+          msg: "Please enter your email and password",
+          msg_type: "error",
+        });
+      }
+  
+      // Check if the user exists in the database
+      con.query("SELECT * FROM users WHERE email = ?", [email], async (error, result) => {
+        if (error) {
+          console.error("Database error:", error);
+          return res.status(500).send("Internal Server Error");
+        }
+  
+        // If user not found
+        if (result.length === 0) {
+          return res.status(401).render("login", {
+            msg: "User not registered",
+            msg_type: "error",
+          });
+        }
+  
+        // Compare the password with hashed password
+        const isMatch = await bcrypt.compare(password, result[0].password);
+        if (!isMatch) {
+          return res.status(401).render("login", {
+            msg: "Wrong password",
+            msg_type: "error",
+          });
+        }
+  
+        // Login successful
+        return res.render("home", { msg: "Login Successful!", msg_type: "good" });
+      });
+  
+    } catch (error) {
+      console.error("Error:", error);
+      return res.status(500).send("Internal Server Error");
+    }
+  };
+  
+
+
+
 
 

@@ -4,7 +4,10 @@
   <body>
     <div class="container">
       <div class="text">User Login</div>
-      <form action="#">
+      {{#if msg}}
+       <p class="{{msg_type}}">{{msg}}</p>
+      {{/if}}
+      <form action="/auth/login" method="post">
         <div class="data">
           <label for="email">Email</label>
           <input type="email" name="email" id="email" />
