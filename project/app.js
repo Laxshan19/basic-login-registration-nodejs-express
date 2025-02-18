@@ -4,11 +4,19 @@ const app=express();//craete express object
 require('dotenv').config();  // Load environment variables(.env)
 const path=require('path');
 const hbs=require("hbs");
+const cookieParser=require("cookie-parser");
 
 
 //Middleware to parse form and JSON data
 //express.urlencoded() and express.json() are before your route definitions
 app.use(express.urlencoded({extended:false}));
+
+
+app.use(cookieParser());  //Use cookieParser BEFORE routes so cookies are available
+/* cookieParser middleware is being used after defining the routes in app.js. Because of this,
+ the cookies are not available in your route handlers, including isLoggedIn.  */
+
+
 // Router (After middleware)
 app.use('/',require("./server/routes/pages"));
 app.use('/auth',require("./server/routes/auth"));
@@ -31,6 +39,8 @@ con.connect((err)=>{
         console.log("✅ Database connected successfully!");
     }
 })
+
+
 
 
 

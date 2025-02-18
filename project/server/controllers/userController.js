@@ -1,5 +1,7 @@
 const mysql=require("mysql2");     //  to communicate to mysql server
 const bcrypt=require("bcryptjs");
+const jwt=require("jsonwebtoken");
+const { promisify }=require("util");//decode the token veriable
 
 //Mysql connection
 const con=mysql.createConnection({
@@ -73,12 +75,20 @@ exports.login = async (req, res) => {
             msg: "Wrong password",
             msg_type: "error",
           });
-        }
-  
-        // Login successful
-        return res.render("home", { msg: "Login Successful!", msg_type: "good" });
-      });
-  
+        }else{
+         // res.send("Good")
+           // // Login successful
+        // return res.render("home", { msg: "Login Successful!", msg_type: "good" });
+        const id=result[0].id;
+        const token=jwt.sign({id:id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRES_IN});
+        console.log("the token is"+ token);
+        const cookieOption={
+          expires:new Date(Date.now()+process.env.JWT_COOKIE_EXPIRES*24*60*60*1000),
+          httponly:true,
+        };
+        res.cookie("lax",token,cookieOption);
+        res.status(200).redirect("/home")
+        } });
     } catch (error) {
       console.error("Error:", error);
       return res.status(500).send("Internal Server Error");
@@ -87,6 +97,38 @@ exports.login = async (req, res) => {
   
 
 
+exports.isLoggedIn=async (req,res,next) =>{
+  //console.log(req.cookies);
+  
+  if(req.cookies.lax){
+        try{
+          const decode=await promisify(jwt.verify)(
+            req.cookies.lax,
+            process.env.JWT_SECRET
+          );
+          console.log(decode);
+          con.query("select * from users where id=?",[decode.id],(error,results)=>{
+            if (error || results.length === 0) {
+              return next(); // Proceed without setting user data
+            }
+            req.user=results[0];
+           // console.log(res.user);
+            return next();
+          });
+        }catch(error){
+          console.log(error);
+          return next();
+        }
+  }else{
+    next();
+  }
+};
+
+
+exports.logout = async (req, res) => {
+  res.clearCookie("lax");
+  res.status(200).redirect("/");
+};
 
 
 
